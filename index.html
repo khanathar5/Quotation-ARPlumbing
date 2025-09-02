@@ -161,6 +161,12 @@
 </div>
 
 <script>
+    // Auto select current date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('quotationDate').value = today;
+  // Auto select current date END
+  
+
   function calculateTotal(){
     let grandTotal = 0;
     let counter = 1;
@@ -305,3 +311,4 @@ $("#downloadPDF").click(function(){
 
 </body>
 </html>
+
