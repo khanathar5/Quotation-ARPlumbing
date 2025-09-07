@@ -1,314 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quotation Maker</title>
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    body { background: #f8f9fa; }
-    .quotation-box { background: #fff; padding: 30px; max-width: 900px; margin: 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .grand-total { font-size: 18px; font-weight: bold; text-align: right; }
-    .signature { margin-top: 60px; text-align: right; }
-    .signature-line { margin-top: 50px; border-top: 1px solid #000; width: 200px; margin-left: auto; }
-    .remove-btn { margin-left: 10px; }
+    body {
+      background: #f8f9fa;
+    }
+
+    .quotation-box {
+      background: #fff;
+      padding: 30px;
+      max-width: 900px;
+      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .grand-total {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .signature {
+      margin-top: 60px;
+      text-align: right;
+    }
+
+    .signature-line {
+      margin-top: 50px;
+      border-top: 1px solid #000;
+      width: 200px;
+      margin-left: auto;
+    }
+
+    .remove-btn {
+      margin-left: 10px;
+    }
 
     /* Table styling */
-    #productTable { border-collapse: collapse; width: 100%; }
-    #productTable th, #productTable td { border: 1px solid #000; padding: 8px; vertical-align: middle; }
-    #productTable tbody tr.section-heading td { background: #f1f1f1; font-weight: bold; }
-    #productTable tbody tr.empty-row td { height: 40px; text-align:center; }
-    #productTable td div[contenteditable], #productTable td small[contenteditable] { min-height: 20px; }
+    #productTable {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #productTable th,
+    #productTable td {
+      border: 1px solid #000;
+      padding: 8px;
+      vertical-align: middle;
+    }
+
+    #productTable tbody tr.section-heading td {
+      background: #f1f1f1;
+      font-weight: bold;
+    }
+
+    #productTable tbody tr.empty-row td {
+      height: 40px;
+      text-align: center;
+    }
+
+    #productTable td div[contenteditable],
+    #productTable td small[contenteditable] {
+      min-height: 20px;
+    }
 
     /* Textarea style for Installments & Terms */
-    textarea { width: 100%; min-height: 40px; resize: vertical; }
+    textarea {
+      width: 100%;
+      min-height: 40px;
+      resize: vertical;
+    }
 
     @media print {
-      .no-print { display: none !important; }
-      .remove-btn { display: none !important; }
+      .no-print {
+        display: none !important;
+      }
+
+      .remove-btn {
+        display: none !important;
+      }
+
+      /* PDF page break fix */
+      #productTable tbody tr,
+      .quotation-box>.row {
+        page-break-inside: avoid;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="container mt-4">
+  <div class="container mt-4">
 
-  <!-- Input Form -->
-  <div class="card p-4 mb-4">
-    <h4 class="mb-3">Quotation Form</h4>
+    <div class="card p-4 mb-4">
+      <h4 class="mb-3">Quotation Form</h4>
 
-    <!-- Company Details -->
-    <div class="row mb-2">
-      <div class="col-md-6"><input type="text" id="companyName" class="form-control" value="A. R. Plumbing Works"></div>
-      <div class="col-md-6"><input type="text" id="companyDetails" class="form-control" value="N No.65/O.No.34, Dr. Besant Road, Royapettah, Chennai, 600014, India"></div>
-    </div>
-    <div class="row mb-2">
-      <div class="col-md-6"><input type="text" id="companyPhone" class="form-control" value="+91 81484 23204"></div>
-      <div class="col-md-6"><input type="text" id="companyEmail" class="form-control" value="arplumbing@gmail.com"></div>
-    </div>
+      <div class="row mb-2">
+        <div class="col-md-6"><input type="text" id="companyName" class="form-control" value="A. R. Plumbing Works">
+        </div>
+        <div class="col-md-6"><input type="text" id="companyDetails" class="form-control"
+            value="N No.65/O.No.34, Dr. Besant Road, Royapettah, Chennai, 600014, India"></div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-6"><input type="text" id="companyPhone" class="form-control" value="+91 81484 23204"></div>
+        <div class="col-md-6"><input type="text" id="companyEmail" class="form-control" value="arplumbing@gmail.com">
+        </div>
+      </div>
 
-    <!-- Client Details -->
-    <div class="row mb-2">
-      <div class="col-md-6"><input type="text" id="clientName" class="form-control" value="" placeholder="Enter Client Detail"></div>
-      <div class="col-md-3"><input type="text" id="quotationNo" class="form-control" value="Quote-2026"></div>
-      <div class="col-md-3"><input type="date" id="quotationDate" class="form-control" value="" required></div>
-    </div>
+      <div class="row mb-2">
+        <div class="col-md-6"><input type="text" id="clientName" class="form-control" placeholder="Enter Client Name">
+        </div>
+        <div class="col-md-6"><input type="text" id="clientMobile" class="form-control"
+            placeholder="Enter Mobile Number"></div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-12"><textarea id="clientAddress" class="form-control" rows="3"
+            placeholder="Enter Client Address..."></textarea></div>
+      </div>
 
-    <!-- Installments -->
-    <h5 class="mt-3">Installments</h5>
-    <div id="installmentList">
-      <textarea class="installment">First Installment: Rs 30,000 (In Advance)</textarea>
-    </div>
-    <button class="btn btn-sm btn-secondary mb-3" id="addInstallment">+ Add Installment</button>
+      <div class="row mb-2">
+        <div class="col-md-6"><input type="text" id="quotationNo" class="form-control" value="Quote-2026"></div>
+        <div class="col-md-6"><input type="date" id="quotationDate" class="form-control" value="" required></div>
+      </div>
 
-    <!-- Terms -->
-    <h5>Terms & Conditions</h5>
-    <div id="termsInput">
-      <textarea class="term">
-        <ol>
+      <h5 class="mt-3">Installments</h5>
+      <div id="installmentList">
+        <textarea class="installment">First Installment: Rs 30,000 (In Advance)</textarea>
+      </div>
+      <button class="btn btn-sm btn-secondary mb-3" id="addInstallment">+ Add Installment</button>
+
+      <h5>Terms & Conditions</h5>
+      <div id="termsInput">
+        <textarea class="term">
+<ol>
 <li>We are only Responsible for our Plumbring Works.</li>
-<li> If you get any additional plumbing work done beyond the tasks mentioned in the list above, you will have to</li>
-<li> pay according to the rate specified for that particular job.</li>
+<li> If you get any additional plumbing work done beyond the tasks mentioned in the list above, you will have to pay according to the rate specified for that particular job.</li>
 <li> NO Civil Work, No Water Proof, No Core Cutting are Covered.</li>
 <li> In this quotation, only pipeline work is included; No Cenetary & equipment is included.</li>
 </ol>
       </textarea>
+      </div>
+      <button class="btn btn-sm btn-secondary mb-3" id="addTerm">+ Add Term</button>
     </div>
-    <button class="btn btn-sm btn-secondary mb-3" id="addTerm">+ Add Term</button>
+
+    <div id="quotationArea" class="quotation-box">
+      <div class="row mb-4">
+        <div class="col-md-9">
+          <h4 id="previewCompanyName" class="fw-bold mb-0">A. R. Plumbing Works</h4>
+          <p id="previewCompanyDetails" class="mb-0">Company Address</p>
+          <p class="mb-0">📞 <span id="previewPhone"></span> | ✉️ <span id="previewEmail"></span></p>
+        </div>
+        <div class="col-md-3 text-end">
+          <h5 class="fw-bold">Quotation</h5>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <p class="mb-1"><strong>To:</strong></p>
+          <div id="previewClientDetails" style="white-space: pre-line;">
+          </div>
+        </div>
+
+        <div class="col-md-6 text-end">
+          <p><strong>Quotation#</strong> <span id="previewQuotationNo"></span><br><strong>Date:</strong> <span
+              id="previewQuotationDate"></span></p>
+        </div>
+      </div>
+
+      <h5 class="text-center fw-bold my-4" contenteditable="true">..............</h5>
+
+      <table class="table table-bordered" id="productTable">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Product Name / Description</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="section-heading">
+            <td colspan="4" contenteditable="true">Bathroom Work</td>
+            <td><button class="btn btn-sm btn-danger remove-btn">✖</button></td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>
+              <div contenteditable="true" class="product-name">Product Name1</div>
+              <small contenteditable="true" class="product-desc">Add Description</small>
+            </td>
+            <td contenteditable="true">1</td>
+            <td contenteditable="true">0</td>
+            <td>
+              0.00
+              <button class="btn btn-sm btn-danger remove-btn">✖</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-sm btn-success mb-3 no-print" id="addRow">+ Add Product</button>
+      <button class="btn btn-sm btn-info mb-3 no-print" id="addSection">+ Add Section</button>
+      <p class="grand-total">GRAND TOTAL: ₹<span id="grandTotal">0.00</span></p>
+      <h6 class="mt-4">Payment Installments:</h6>
+      <div id="previewInstallments"></div>
+
+      <h6 class="mt-4">Terms & Conditions:</h6>
+      <div id="termsList" style="white-space: pre-wrap;"></div>
+
+      <div class="signature">
+        <p>For, <span id="previewCompanyName2">A. R. Plumbing Works</span></p>
+        <div class="signature-line"></div>
+        <p>Authorized Signature</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-primary" id="updatePreview">Update Preview</button>
+      <button class="btn btn-danger" id="downloadPDF">Download PDF</button>
+    </div>
+
   </div>
 
-  <!-- Quotation Preview -->
-  <div id="quotationArea" class="quotation-box">
-    <!-- Header -->
-    <div class="row mb-4">
-      <div class="col-md-9">
-        <h4 id="previewCompanyName" class="fw-bold mb-0">A. R. Plumbing Works</h4>
-        <p id="previewCompanyDetails" class="mb-0">Company Address</p>
-        <p class="mb-0">📞 <span id="previewPhone"></span> | ✉️ <span id="previewEmail"></span></p>
-      </div>
-      <div class="col-md-3 text-end"><h5 class="fw-bold">Quotation</h5></div>
-    </div>
+  <script>
+    // Auto select current date
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('quotationDate').value = today;
+    // Auto select current date END
 
-    <!-- Quotation Details -->
-    <div class="row mb-4">
-      <div class="col-md-6"><p><strong>To:</strong> <span id="previewClientName"></span></p></div>
-      <div class="col-md-6 text-end"><p><strong>Quotation#</strong> <span id="previewQuotationNo"></span><br><strong>Date:</strong> <span id="previewQuotationDate"></span></p></div>
-    </div>
+    // function calculateTotal() {
+    //   let grandTotal = 0;
+    //   let counter = 1;
+    //   $("#productTable tbody tr").each(function () {
+    //     if (!$(this).hasClass("section-heading") && !$(this).hasClass("empty-row")) {
+    //       let qty = parseFloat($(this).find("td:eq(2)").text()) || 0;
+    //       let price = parseFloat($(this).find("td:eq(3)").text()) || 0;
+    //       let total = qty * price;
+    //       $(this).find("td:eq(4)").contents().first()[0].nodeValue = total.toFixed(2);
+    //       $(this).find("td:eq(0)").text(counter++);
+    //       grandTotal += total;
+    //     }
+    //   });
 
-    <!-- Product Table -->
-    <table class="table table-bordered" id="productTable">
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>Product Name / Description</th>
-          <th>Qty</th>
-          <th>Price</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
+    //   $("#grandTotal").text(grandTotal.toFixed(2));
+    //   updateEmptyRowPlaceholder();
+    // }
+
+    // ==========UPDATED CODE For Comma AMT =======
+    function calculateTotal() {
+      let grandTotal = 0;
+      let counter = 1;
+      $("#productTable tbody tr").each(function () {
+        if (!$(this).hasClass("section-heading") && !$(this).hasClass("empty-row")) {
+          let qty = parseFloat($(this).find("td:eq(2)").text()) || 0;
+          let price = parseFloat($(this).find("td:eq(3)").text()) || 0;
+          let total = qty * price;
+
+          // Badlav yahan kiya gaya hai
+          $(this).find("td:eq(4)").contents().first()[0].nodeValue = Math.round(total).toLocaleString('en-US');
+
+          $(this).find("td:eq(0)").text(counter++);
+          grandTotal += total;
+        }
+      });
+
+      // Aur badlav yahan kiya gaya hai
+      $("#grandTotal").text(Math.round(grandTotal).toLocaleString('en-US'));
+
+      updateEmptyRowPlaceholder();
+    }
+    // ==========UPDATED CODE For Comma AMT END =======
+
+
+    function updateEmptyRowPlaceholder() {
+      // Count only rows that are not section headings
+      if ($("#productTable tbody tr").not('.section-heading').length === 0) {
+        // If an empty row doesn't already exist, add one
+        if ($("#productTable .empty-row").length === 0) {
+          $("#productTable tbody").append('<tr class="empty-row"><td colspan="5">No products added</td></tr>');
+        }
+      } else {
+        // If there are product rows, remove any empty-row placeholder
+        $("#productTable .empty-row").remove();
+      }
+    }
+
+    $("#updatePreview").click(function () {
+      // Company Details
+      $("#previewCompanyName, #previewCompanyName2").text($("#companyName").val());
+      $("#previewCompanyDetails").text($("#companyDetails").val());
+      $("#previewPhone").text($("#companyPhone").val());
+      $("#previewEmail").text($("#companyEmail").val());
+
+      // Quotation Details
+      $("#previewQuotationNo").text($("#quotationNo").val());
+      $("#previewQuotationDate").text($("#quotationDate").val());
+
+      // --- Client Details (Corrected Logic) ---
+      let clientName = $("#clientName").val();
+      let clientMobile = $("#clientMobile").val();
+      let clientAddress = $("#clientAddress").val();
+
+      let clientDetailsText = "";
+      if (clientName) clientDetailsText += clientName + '\n';
+      if (clientMobile) clientDetailsText += clientMobile + '\n';
+      if (clientAddress) clientDetailsText += clientAddress;
+
+      $("#previewClientDetails").text(clientDetailsText);
+      // --- End of Corrected Logic ---
+
+      // Installments
+      $("#previewInstallments").empty();
+      $(".installment").each(function () {
+        if ($(this).val().trim() !== "") {
+          $("#previewInstallments").append("<p>" + $(this).val() + "</p>");
+        }
+      });
+
+      // Terms
+      $("#termsList").empty();
+      $(".term").each(function () {
+        if ($(this).val().trim() !== "") {
+          $("#termsList").html($(this).val()); // Use .html() to render <ol> and <li> tags
+        }
+      });
+
+      calculateTotal();
+    });
+
+    $("#addInstallment").click(function () {
+      $("#installmentList").append('<textarea class="installment"></textarea>');
+    });
+
+    $("#addTerm").click(function () {
+      $("#termsInput").append('<textarea class="term"></textarea>');
+    });
+
+    // --- THIS IS THE CORRECTED FUNCTION ---
+    $("#addSection").click(function () {
+      $("#productTable tbody").append(`
         <tr class="section-heading">
-          <td colspan="4" contenteditable="true">Bathroom Work</td>
+          <td colspan="4" contenteditable="true">New Section</td>
           <td><button class="btn btn-sm btn-danger remove-btn">✖</button></td>
         </tr>
+      `);
+      calculateTotal(); // This line fixes the bug
+    });
+
+    $("#addRow").click(function () {
+      $("#productTable tbody").append(`
         <tr>
-          <td>1</td>
+          <td>0</td>
           <td>
-            <div contenteditable="true" class="product-name">Product Name1</div>
+            <div contenteditable="true" class="product-name">Product Name</div>
             <small contenteditable="true" class="product-desc">Add Description</small>
           </td>
           <td contenteditable="true">1</td>
           <td contenteditable="true">0</td>
           <td>
-            63000
+            0.00
             <button class="btn btn-sm btn-danger remove-btn">✖</button>
           </td>
         </tr>
-      </tbody>
-    </table>
-    <button class="btn btn-sm btn-success mb-3 no-print" id="addRow">+ Add Product</button>
-    <button class="btn btn-sm btn-info mb-3 no-print" id="addSection">+ Add Section</button>
-    <!-- Total -->
-    <p class="grand-total">GRAND TOTAL: ₹<span id="grandTotal">63000</span></p>
-    <!-- Installments Preview -->
-    <h6 class="mt-4">Payment Installments:</h6>
-    <div id="previewInstallments"></div>
-
-    <!-- Total -->
-    <!-- <p class="grand-total">GRAND TOTAL: ₹<span id="grandTotal">63000</span></p> -->
-
-    <!-- Terms -->
-    <h6 class="mt-4">Terms & Conditions:</h6>
-    <div id="termsList"></div>
-
-    <!-- Signature -->
-    <div class="signature">
-      <p>For, <span id="previewCompanyName2">A. R. Plumbing Works</span></p>
-      <div class="signature-line"></div>
-      <p>Authorized Signature</p>
-    </div>
-  </div>
-
-  <!-- Buttons -->
-  <div class="text-center mt-4">
-    <button class="btn btn-primary" id="updatePreview">Update Preview</button>
-    <button class="btn btn-danger" id="downloadPDF">Download PDF</button>
-  </div>
-
-</div>
-
-<script>
-    // Auto select current date
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('quotationDate').value = today;
-  // Auto select current date END
-  
-
-  function calculateTotal(){
-    let grandTotal = 0;
-    let counter = 1;
-    $("#productTable tbody tr").each(function(){
-      if(!$(this).hasClass("section-heading")){
-        let qty = parseFloat($(this).find("td:eq(2)").text()) || 0;
-        let price = parseFloat($(this).find("td:eq(3)").text()) || 0;
-        let total = qty * price;
-        $(this).find("td:eq(4)").contents().first()[0].nodeValue = total.toFixed(2);
-        $(this).find("td:eq(0)").text(counter++);
-        grandTotal += total;
-      }
+      `);
+      calculateTotal();
     });
 
-    $("#grandTotal").text(grandTotal.toFixed(2));
-
-    $(".product-desc").each(function(){
-      $(this).toggle($(this).text().trim() !== "");
+    $(document).on("input", "#productTable td[contenteditable=true], .product-name, .product-desc", function () {
+      calculateTotal();
     });
 
-    updateEmptyRowPlaceholder();
-  }
-
-  function updateEmptyRowPlaceholder(){
-    if($("#productTable tbody tr").length === 0){
-      $("#productTable tbody").append('<tr class="empty-row"><td colspan="5">No products added</td></tr>');
-    } else {
-      $("#productTable tbody tr.empty-row").remove();
-    }
-  }
-
-  $("#updatePreview").click(function(){
-    $("#previewCompanyName, #previewCompanyName2").text($("#companyName").val());
-    $("#previewCompanyDetails").text($("#companyDetails").val());
-    $("#previewPhone").text($("#companyPhone").val());
-    $("#previewEmail").text($("#companyEmail").val());
-    $("#previewClientName").text($("#clientName").val());
-    $("#previewQuotationNo").text($("#quotationNo").val());
-    $("#previewQuotationDate").text($("#quotationDate").val());
-
-    $("#previewInstallments").empty();
-    $(".installment").each(function(){
-      if($(this).val().trim() !== ""){
-        $("#previewInstallments").append("<p>"+$(this).val()+"</p>");
-      }
+    $(document).on("click", ".remove-btn", function () {
+      $(this).closest("tr").remove();
+      calculateTotal();
     });
 
-    $("#termsList").empty();
-    $(".term").each(function(){
-      if($(this).val().trim() !== ""){
-        $("#termsList").append("<p>"+$(this).val()+"</p>");
-      }
+    $("#downloadPDF").click(function () {
+      $("#updatePreview").click(); // Automatically update preview before downloading
+
+      calculateTotal();
+      let $clone = $("#quotationArea").clone();
+      $clone.find(".product-desc").each(function () {
+        if ($(this).text().trim() === "" || $(this).text().trim() === "Add Description") $(this).remove();
+      });
+      $clone.find("#addRow, #addSection, .remove-btn").remove();
+
+      let clientName = $("#clientName").val().trim() || "Quotation";
+
+      html2pdf().from($clone[0]).set({
+        margin: [0.2, 0.2, 0.2, 0.2],
+        filename: clientName + '.pdf',
+        image: { type: 'png', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      }).save();
     });
 
+    // Initial load Actions
     calculateTotal();
-  });
+    $("#updatePreview").click();
 
-  $("#addInstallment").click(function(){
-    $("#installmentList").append('<textarea class="installment"></textarea>');
-  });
-
-  $("#addTerm").click(function(){
-    $("#termsInput").append('<textarea class="term"></textarea>');
-  });
-
-  $("#addSection").click(function(){
-    $("#productTable tbody").append(`
-      <tr class="section-heading">
-        <td colspan="4" contenteditable="true">New Section</td>
-        <td><button class="btn btn-sm btn-danger remove-btn">✖</button></td>
-      </tr>
-    `);
-  });
-
-  $("#addRow").click(function(){
-    $("#productTable tbody").append(`
-      <tr>
-        <td>0</td>
-        <td>
-          <div contenteditable="true" class="product-name">Product Name</div>
-          <small contenteditable="true" class="product-desc"></small>
-        </td>
-        <td contenteditable="true">1</td>
-        <td contenteditable="true">0</td>
-        <td>
-          0
-          <button class="btn btn-sm btn-danger remove-btn">✖</button>
-        </td>
-      </tr>
-    `);
-    calculateTotal();
-  });
-
-  $(document).on("input", "#productTable td[contenteditable=true], .product-name, .product-desc", function(){
-    calculateTotal();
-  });
-
-  $(document).on("click", ".remove-btn", function(){
-    $(this).closest("tr").remove();
-    calculateTotal();
-  });
-
-//   $("#downloadPDF").click(function(){
-//     calculateTotal();
-//     let $clone = $("#quotationArea").clone();
-//     $clone.find(".product-desc").each(function(){
-//       if($(this).text().trim() === "") $(this).remove();
-//     });
-//     $clone.find("#addRow, #addSection, .remove-btn").remove();
-//     html2pdf().from($clone[0]).set({
-//       margin: [0.2,0.2,0.2,0.2],
-//       filename: 'Quotation.pdf',
-//       image: { type: 'jpeg', quality: 1 },
-//       html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-//       jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-//     }).save();
-//   });
-$("#downloadPDF").click(function(){
-  calculateTotal();
-  let $clone = $("#quotationArea").clone();
-  $clone.find(".product-desc").each(function(){
-    if($(this).text().trim() === "") $(this).remove();
-  });
-  $clone.find("#addRow, #addSection, .remove-btn").remove();
-
-  // Use client name as filename
-  let clientName = $("#clientName").val().trim() || "Quotation";
-
-  html2pdf().from($clone[0]).set({
-    margin: [0.2,0.2,0.2,0.2],
-    filename: clientName + '.pdf',  // <-- Updated
-    image: { type: 'png', quality: 1 },
-    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  }).save();
-});
-
-
-  // Initial calculation
-  calculateTotal();
-</script>
+  </script>
 
 </body>
-</html>
 
+</html>
